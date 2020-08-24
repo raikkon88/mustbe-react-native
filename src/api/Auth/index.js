@@ -1,5 +1,5 @@
 import Axios from '../../axios'
-import Storage from '../../storage'
+import Storage, { KEYS } from '../../storage'
 
 const HEADER_BEARER = "Bearer "
 
@@ -8,10 +8,12 @@ const AuthApi = {
         let url = Axios.defaults.baseURL.replace('/api', '')
         return Axios.post(url + '/login', {phone: phone, password: password})
             .then(res => { 
-                Storage.save(res.headers.authorization.replace(HEADER_BEARER, ""))
+                let token = res.headers.authorization.replace(HEADER_BEARER, "")
+                Axios.configure(token)
+                Storage.save(KEYS.TOKEN, token)
             })
     },
-    register: (phone, password) => Axios.post('/', { phone: phone, password: password })
+    register: (phone, password) => Axios.post('/auth/register', { phone: phone, password: password })
 }    
 
 export default AuthApi

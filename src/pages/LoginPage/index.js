@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect} from 'react'
 import {
     View,
     Text,
@@ -6,12 +6,12 @@ import {
     Button
   } from 'react-native';
 import AuthApi from '../../api/Auth'
+import Credentials from '../../components/credentials'
+import PlayerApi from '../../api/Players'
 
 export default function LoginPage({navigation}) {
-    const [phone, setPhone] = useState('')
-    const [password, setPassword] = useState('')
 
-    const login = () => {
+    const login = (phone, password) => {
         AuthApi.login(phone, password)
             .then(res => {
                 navigation.navigate('Home')
@@ -19,24 +19,28 @@ export default function LoginPage({navigation}) {
             .catch(err => console.log(err))
     }
 
+    const register = () => {
+        navigation.navigate('Register')
+    }
+
+    useEffect(() => {
+        PlayerApi.self()
+                .then(res => navigation.navigate("Home"))
+                .catch(err => console.log(err))
+    }, [])
+
     return ( 
         <View>
-            <Text>Phone Number:</Text>
-            <TextInput
-                onChangeText={text => setPhone(text)}
-                value={phone}
-                />
-            <Text>Password:</Text>
-            <TextInput
-                onChangeText={text => setPassword(text)}
-                value={password}
-                />
+            <Credentials
+                action={login}
+                textButton="login"
+                label="Push this button to log in"/>
 
             <Button
-                onPress={login}
-                title="Login"
-                accessibilityLabel="Push this button to log in"
-            />
+                onPress={register}
+                title="Register"
+                accessibilityLabel="If you haven't got an account, please Register."
+                ></Button>
         </View>
     )
 

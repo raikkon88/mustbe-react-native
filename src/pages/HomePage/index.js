@@ -5,9 +5,17 @@ import {
     TextInput,
     Button
   } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import EventsList from '../../components/events/list'
+import InscriptionsList from '../../components/inscriptions/list'
+
+const Tab = createBottomTabNavigator();
 
 export default function HomePage({navigation}) {
     return (
-        <View><Text>Mariconadas</Text></View>
+        <Tab.Navigator>
+            <Tab.Screen name="Inscriptions" component={InscriptionsList} />
+            <Tab.Screen name="Events" component={EventsList} />
+        </Tab.Navigator>
     )
 }

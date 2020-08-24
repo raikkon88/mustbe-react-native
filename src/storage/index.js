@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
 export const KEYS = {
-    TOKEN: 'token'
+    TOKEN: 'token',
+    USER: 'user'
 }
 
 const Storage = {}

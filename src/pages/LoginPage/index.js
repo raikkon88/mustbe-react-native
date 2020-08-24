@@ -8,6 +8,7 @@ import {
 import AuthApi from '../../api/Auth'
 import Credentials from '../../components/credentials'
 import PlayerApi from '../../api/Players'
+import Storage , { KEYS } from '../../storage'
 
 export default function LoginPage({navigation}) {
 
@@ -25,7 +26,10 @@ export default function LoginPage({navigation}) {
 
     useEffect(() => {
         PlayerApi.self()
-                .then(res => navigation.navigate("Home"))
+                .then(res => { 
+                    Storage.saveObject(KEYS.USER, res.data)
+                    navigation.navigate("Home")
+                })
                 .catch(err => console.log(err))
     }, [])
 

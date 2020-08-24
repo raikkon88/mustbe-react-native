@@ -14,15 +14,16 @@ export default function EventsList({navigation}) {
     const [events, setEvents] = useState([])
     const [user, setUser] = useState({})
 
-    
-
     useEffect(() => {
-        EventsApi.all() 
-            .then(res => setEvents(res.data))
-            .then(res => Storage.getObject(KEYS.USER))
-            .then(res => setUser(res))
-            .catch(err => console.log(err))
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            EventsApi.all() 
+                .then(res => setEvents(res.data))
+                .then(res => Storage.getObject(KEYS.USER))
+                .then(res => setUser(res))
+                .catch(err => console.log(err))
+        });
+        return unsubscribe;
+    }, [navigation])
 
     const subscribe = (eventId) => {
         InscriptionsApi.subscribe(eventId)

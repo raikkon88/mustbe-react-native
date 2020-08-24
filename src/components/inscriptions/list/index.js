@@ -5,16 +5,28 @@ import {
     FlatList
 } from 'react-native'
 import InscriptionsApi from '../../../api/Inscriptions'
+import InscriptionItem from '../item'
+import Storage, { KEYS } from '../../../storage'
 
 export default function InscriptionsList({navigation}) {
 
     const [inscriptions, setInscriptions] = useState([])
 
     useEffect(() => {
-        InscriptionsApi.all()
+        const unsubscribe = navigation.addListener('focus', () => {
+            InscriptionsApi.all()
+                .then(res => setInscriptions(res.data))
+                .catch(err => console.log(err))
+        });
+        return unsubscribe;
+    }, [navigation])
+
+    const unsubscribe = (eventId) => {
+        InscriptionsApi.unsubscribe(eventId)
+            .then(res => InscriptionsApi.all())
             .then(res => setInscriptions(res.data))
             .catch(err => console.log(err))
-    }, [])
+    }
 
     return (
         <View>
@@ -22,7 +34,11 @@ export default function InscriptionsList({navigation}) {
             <FlatList
                 keyExtractor={(item, index) => index.toString()}
                 data={inscriptions}
-                renderItem={({item}) => <Text>item</Text>}/>
+                renderItem={({item}) => 
+                    <InscriptionItem
+                        unsubscribe={unsubscribe}
+                        inscription={item}/>
+                }/>
         </View>
     )
 }
